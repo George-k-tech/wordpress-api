@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Commands;
 
 use App\Http\Controllers\Commands\Customer\AddCustomerCommandController;
+use App\Http\Controllers\Commands\Payment\AddPaymentCommandController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\StorePaymentRequest;
 use Illuminate\Http\JsonResponse;
 
 class ManageStoreEntryController extends Controller
@@ -127,5 +129,16 @@ class ManageStoreEntryController extends Controller
     public function addCustomer(StoreCustomerRequest $request): JsonResponse
     {
         return (new AddCustomerCommandController())->handle($request);
+    }
+
+    /**
+     * add payment
+     * @param StorePaymentRequest $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function addPayment(StorePaymentRequest $request, $id): JsonResponse
+    {
+        return (new AddPaymentCommandController())->handle($request, $id);
     }
 }

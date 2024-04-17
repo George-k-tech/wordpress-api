@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Commands;
 
+use App\Http\Controllers\Commands\Customer\AddCustomerCommandController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCustomerRequest;
+use Illuminate\Http\JsonResponse;
 
 class ManageStoreEntryController extends Controller
 {
@@ -114,5 +117,15 @@ class ManageStoreEntryController extends Controller
                 'decimal'
             ]
         ];
+    }
+
+    /**
+     * add customer
+     * @param StoreCustomerRequest $request
+     * @return JsonResponse
+     */
+    public function addCustomer(StoreCustomerRequest $request): JsonResponse
+    {
+        return (new AddCustomerCommandController())->handle($request);
     }
 }

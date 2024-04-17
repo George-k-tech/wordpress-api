@@ -10,18 +10,21 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('customer_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->autoIncrement();
-            $table->string('first_name')->nullable();
-            $table->string('last-name')->nullable();
-            $table->string('company_name')->nullable();
-            $table->string('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->boolean('create_account')->default(false);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('customer_details')) {
+            Schema::create('customer_details', function (Blueprint $table) {
+                $table->unsignedBigInteger('id')->autoIncrement();
+                $table->string('first_name')->nullable();
+                $table->string('last_name')->nullable();
+                $table->string('company_name')->nullable();
+                $table->string('address')->nullable();
+                $table->string('city')->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone')->nullable();
+                $table->boolean('create_account')->default(false);
+                $table->timestamps();
+            });
+        }
+
     }
 
     /**
@@ -29,6 +32,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer_details');
+        if (Schema::hasTable('customer_details')) {
+            Schema::dropIfExists('customer_details');
+        }
     }
 };

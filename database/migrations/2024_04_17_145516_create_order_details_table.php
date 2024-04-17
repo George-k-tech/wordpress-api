@@ -11,21 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->autoIncrement();
-            $table->unsignedBigInteger('customer_id')->nullable();
-            $table->string('shipping_address')->nullable();
-            $table->boolean('ship_to_different_address')->default(false);
-            $table->longText('order_notes')->nullable();
-            $table->string('product')->nullable();
-            $table->integer('quantity')->nullable();
-            $table->decimal('cart_subtotal')->nullable();
-            $table->string('shipping_handling')->nullable();
-            $table->decimal('order_total')->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('order_details')) {
+            Schema::create('order_details', function (Blueprint $table) {
+                $table->unsignedBigInteger('id')->autoIncrement();
+                $table->unsignedBigInteger('customer_id')->nullable();
+                $table->string('shipping_address')->nullable();
+                $table->boolean('ship_to_different_address')->default(false);
+                $table->longText('order_notes')->nullable();
+                $table->string('product')->nullable();
+                $table->integer('quantity')->nullable();
+                $table->decimal('cart_subtotal')->nullable();
+                $table->string('shipping_handling')->nullable();
+                $table->decimal('order_total')->nullable();
+                $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customer_details')->onDelete('cascade');
-        });
+                $table->foreign('customer_id')->references('id')->on('customer_details')->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -33,6 +35,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_details');
+        if (Schema::hasTable('order_details')){
+            Schema::dropIfExists('order_details');
+        }
     }
 };

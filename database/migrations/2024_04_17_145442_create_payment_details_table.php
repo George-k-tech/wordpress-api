@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->autoIncrement();
-            $table->unsignedBigInteger('customer_id')->nullable();
-            $table->string('payment_method')->nullable();
-            $table->string('paypal_account')->nullable();
-            $table->string('bank_account')->nullable();
-            $table->string('cheque_details')->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('payment_details')) {
+            Schema::create('payment_details', function (Blueprint $table) {
+                $table->unsignedBigInteger('id')->autoIncrement();
+                $table->unsignedBigInteger('customer_id')->nullable();
+                $table->string('payment_method')->nullable();
+                $table->string('paypal_account')->nullable();
+                $table->string('bank_account')->nullable();
+                $table->string('cheque_details')->nullable();
+                $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customer_details')->onDelete('cascade');
-        });
+                $table->foreign('customer_id')->references('id')->on('customer_details')->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -29,6 +31,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment_details');
+        if (Schema::hasTable('payment_details')){
+            Schema::dropIfExists('payment_details');
+        }
     }
 };

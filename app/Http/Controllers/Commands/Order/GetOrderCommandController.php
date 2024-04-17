@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Commands\Order;
 
 use App\Helpers\CraydelJSONResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Models\CustomerDetail;
+use App\Models\OrderDetail;
 use App\Traits\CanLog;
 use App\Traits\CanRespond;
 use Exception;
@@ -25,13 +25,13 @@ class GetOrderCommandController extends Controller
     public function handle(Request $request, $id): JsonResponse
     {
         try {
-            $newData = DB::table((new CustomerDetail())->getTable())
+            $newData = DB::table((new OrderDetail())->getTable())
                 ->where('id', $id)
                 ->first();
 
             return $this->respondInJSON(new CraydelJSONResponseHelper(
                 true,
-                'Customer details',
+                'Order details',
                 $newData
             ));
         } catch (Exception $exception) {

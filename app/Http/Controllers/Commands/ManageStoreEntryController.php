@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Commands;
 
 use App\Http\Controllers\Commands\Customer\AddCustomerCommandController;
+use App\Http\Controllers\Commands\Customer\GetCustomerCommandController;
 use App\Http\Controllers\Commands\Order\AddOrderCommandController;
 use App\Http\Controllers\Commands\Order\GetOrderCommandController;
 use App\Http\Controllers\Commands\Payment\AddPaymentCommandController;
+use App\Http\Controllers\Commands\Payment\GetPaymentCommandController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\StoreOrderRequest;
@@ -165,6 +167,28 @@ class ManageStoreEntryController extends Controller
      */
     public function getCustomer(Request $request, $id): JsonResponse
     {
-        return (new GetOrderCommandController())->handle($request,$id);
+        return (new GetCustomerCommandController())->handle($request,$id);
+    }
+
+    /**
+     * get payment
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getPayment(Request $request, $id): JsonResponse
+    {
+        return (new GetPaymentCommandController())->handle($request, $id);
+    }
+
+    /**
+     * get order
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getOrder(Request $request, $id): JsonResponse
+    {
+        return (new GetOrderCommandController())->handle($request, $id);
     }
 }

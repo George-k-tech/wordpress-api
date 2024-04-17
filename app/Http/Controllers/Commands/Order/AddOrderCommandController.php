@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Commands\Order;
 
 use App\Helpers\CraydelJSONResponseHelper;
+use App\Helpers\DateHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderRequest;
+use App\Models\OrderDetail;
 use App\Traits\CanLog;
 use App\Traits\CanRespond;
+use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AddOrderCommandController extends Controller
 {
@@ -15,18 +19,35 @@ class AddOrderCommandController extends Controller
     use CanRespond;
 
     /**
-     * @param Request $request
+     * @param StoreOrderRequest $request
+     * @param $id
      * @return JsonResponse
      */
-    public function handle(Request $request): JsonResponse
+    public function handle(StoreOrderRequest $request, $id): JsonResponse
     {
         try {
+            $saved = false;
+            $data = $this->format($request, $id);
 
-            return  $this->respondInJSON(new CraydelJSONResponseHelper(
+            DB::transaction(function () use(&$saved, $data){
+                $saved = DB::table((new OrderDetail())->getTable())
+                    ->insert($data);
+            });
+
+            if (!$saved){
+                throw new Exception('unable t add order');
+            }
+
+            $newData = DB::table((new OrderDetail())->getTable())
+                ->where('shipping_address', $data['shipping_address'])
+                ->first();
+
+            return $this->respondInJSON(new CraydelJSONResponseHelper(
                 true,
-                'Order details added successfully.'
+                'Order details added successfully.',
+                $newData
             ));
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logException($exception);
 
             return $this->respondInJSON(new CraydelJSONResponseHelper(
@@ -34,5 +55,18 @@ class AddOrderCommandController extends Controller
                 $this->makeExceptionMessage($exception)
             ));
         }
+    }
+
+    /**
+     * @param StoreOrderRequest $request
+     * @param $id
+     * @return array
+     */
+    protected function format(StoreOrderRequest $request, $id): array
+    {
+        return array_merge($request->safe()->all(), [
+            'customer_id' => $id,
+            'created_at' => DateHelper::now()->toDateTimeString()
+        ]);
     }
 }

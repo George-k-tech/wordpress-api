@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Commands;
 
 use App\Http\Controllers\Commands\Customer\AddCustomerCommandController;
+use App\Http\Controllers\Commands\Order\AddOrderCommandController;
 use App\Http\Controllers\Commands\Payment\AddPaymentCommandController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\StorePaymentRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -108,7 +110,7 @@ class ManageStoreEntryController extends Controller
             ],
             'cart_subtotal' => [
                 'sometimes',
-                'decimal'
+                'decimal:2'
             ],
             'shipping_handling' => [
                 'sometimes',
@@ -116,7 +118,7 @@ class ManageStoreEntryController extends Controller
             ],
             'order_total' => [
                 'sometimes',
-                'decimal'
+                'decimal:2'
             ]
         ];
     }
@@ -140,5 +142,16 @@ class ManageStoreEntryController extends Controller
     public function addPayment(StorePaymentRequest $request, $id): JsonResponse
     {
         return (new AddPaymentCommandController())->handle($request, $id);
+    }
+
+    /**
+     * add order details
+     * @param StoreOrderRequest $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function addOrder(StoreOrderRequest $request, $id): JsonResponse
+    {
+        return (new AddOrderCommandController())->handle($request, $id);
     }
 }
